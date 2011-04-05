@@ -69,37 +69,31 @@ if username and password and action:
 
         if action == 'insert':
             before = finser.summary()
-            if finser.insert( params['text'] ):
-                print "Bilance before: %s, after insert: %s" % ( before, finser.summary() )
-            else:
+            if not finser.insert( params['text'] ):
                 print "ERROR: cannot insert text %s" % params['text']
 
         elif action == "accounts":
-            data = finser.accounts()
-            ss = 0
-            for k, v in data.items():
+            ss = {}
+            for account in finser.accounts():
                 val = []
-                for t, s in v["summary"].items():
-                    bill = float( s['plus'] ) - float( s['minus'] )
-                    val.append( "%8s %s" % ( bill, t ) )
-                    ss += bill
-                
-                print "%-50s %s" % ( v['name'], ",".join( val ) )
+                for currency, summary in account.getCurrencySummary():
+                    val.append( "%8s %s" % ( summary, currency ) )
+                    if not ss.has_key( currency ):
+                        ss[currency] = 0
+                    ss[currency] += summary
+                print "%-50s %s" % ( account.name, ",".join( val ) )
             print "-----"
-            print "%-50s %s PLN" % ( "Summary", ss )
+            for currency, summary in ss.items():
+               print "%-50s %s %s" % ( "Summary", summary, currency )
 
         elif action == "remove":
             before = finser.summary()
-            if finser.remove():
-                print "Bilance before: %s, after insert: %s" % ( before, finser.summary() )
-            else:
+            if not finser.remove():
                 print "ERROR: cannot remove last item ..."
 
         elif action == "last":
-            data = finser.get()
-            for k, o in data['operations'].items():
-                v, vv = o['value'].split()
-                print "%-50s %8s %s" % ( o['text'], v, vv )
+            for item in finser.get():
+                print "%-50s %8s %s" % ( item.text, item.getValue(), item.getCurrency() )
 
         finser.logout()
 
