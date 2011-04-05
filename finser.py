@@ -140,7 +140,6 @@ class Finser:
 
         data, code = self.__openUrl( self.URL_PATTERN % "insert", params )
         
-        return code == 200
         return self.__isSuccess( code )
 
     def accounts( self ):

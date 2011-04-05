@@ -68,7 +68,6 @@ if username and password and action:
     if logged:
 
         if action == 'insert':
-            before = finser.summary()
             if not finser.insert( params['text'] ):
                 print "ERROR: cannot insert text %s" % params['text']
 
