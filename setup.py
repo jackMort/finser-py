@@ -20,11 +20,10 @@ from distutils.core import setup
 
 setup( name='finser-py',
        version='1.0',
-       description='Python finser library',
+       description='Finser library for python',
        author='Lech Twaróg',
        author_email='lech.twarog@gmail.com',
        url='http://github.com/jackMort/finser-py',
        py_modules=[ 'finser', ],
        data_files=[ ( '/usr/bin', [ 'finser-client.py' ] ) ]
-
      )
