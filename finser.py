@@ -19,6 +19,8 @@ import json
 import urllib
 import urllib2
 
+from datetime import datetime
+
 class Account:
 
     def __init__( self, name ):
@@ -39,7 +41,7 @@ class AbstractOperation( object ):
 
     def __init__( self, type, time, text ):
         self.type = type
-        self.time = time
+        self.time = float( time )
         self.text = text
 
     def getValue( self ):
@@ -47,6 +49,9 @@ class AbstractOperation( object ):
 
     def getCurrency( self ):
         pass
+
+    def getDateTime( self ):
+        return datetime.utcfromtimestamp( self.time )
 
     def getDescription( self ):
         return self.text
@@ -67,7 +72,7 @@ class AccountValueOperation( AccountOperation ):
         self.__value, self.__currency = value.split()
 
     def getValue( self ):
-        return self.__value
+        return float( self.__value )
 
     def getCurrency( self ):
         return self.__currency
@@ -83,7 +88,7 @@ class MoveOperation( AbstractOperation ):
         self.account_to = account_to
 
     def getValue( self ):
-        return self.__value
+        return float( self.__value )
 
     def getCurrency( self ):
         return self.__currency
@@ -178,7 +183,8 @@ class Finser:
             result = []
             for id, dt in raw['operations'].items():
                 result.append( getOperationByType( dt['type'], **dt ) )
-            return result
+
+            return sorted( result, key=lambda item: item.time, reverse=True )
         else:
             return {}
 
