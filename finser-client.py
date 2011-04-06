@@ -18,27 +18,21 @@
 import os
 import sys
 import getopt
+import getpass
 import marshal
 
 from finser import Finser
 
-options, remainder = getopt.getopt( sys.argv[1:], 'u:p:i:arl', [ 'username=',
-                                                                   'password=',
-                                                                   'accounts', 'insert=', 
-                                                                   'remove', 'last'])
-username = ""
-password = ""
+options, remainder = getopt.getopt( sys.argv[1:], 'i:arlnc', [ 'accounts', 'insert=', 
+                                                              'remove', 'last', 'no-cache', 'clear-cache' ])
 action = ""
 params = {}
+noCache = False
+clearCache = False
 
 for opt, arg in options:
-    if opt in ( '-u', '--username' ):
-        username = arg
-
-    elif opt in ( '-p', '--password' ):
-        password = arg
-
-    elif opt in ( '-a', '--accounts' ):
+    
+    if opt in ( '-a', '--accounts' ):
         action = 'accounts'
 
     elif opt in ( '-i', '--insert' ):
@@ -51,18 +45,40 @@ for opt, arg in options:
     elif opt in ( '-l', '--last' ):
         action = 'last'
 
-path = os.path.join( os.path.expanduser( "~" ), ".finser-py.cache" )
-if username == "" or password == "":
-    if os.path.exists( path ):
+    elif opt in ( '-n', '--no-cache' ):
+        noCache = True
+    
+    elif opt in ( '-c', '--clear-cache' ):
+        clearCache = True
+
+def login():
+    username = raw_input( "Username [%s]: " % getpass.getuser() )
+    if not username:
+        username = getpass.getuser()
+
+    password = getpass.getpass()
+    while not password:
+        password = getpass.getpass()
+
+    return username, password
+
+if noCache:
+    username, password = login()
+
+else:
+    path = os.path.join( os.path.expanduser( "~" ), ".finser-py.cache" )
+    if os.path.exists( path ) and not clearCache:
         f = open( path, 'r' )
         username, password = marshal.loads( f.read() )
         f.close()
-else:
-    f = open( path, 'w' )
-    f.write( marshal.dumps( ( username, password ) ) )
-    f.close()
+    else:
+        username, password = login()
+        
+        f = open( path, 'w' )
+        f.write( marshal.dumps( ( username, password ) ) )
+        f.close()
 
-if username and password and action:
+if action:
     finser = Finser( username, password )
     logged = finser.login()
     if logged:
@@ -99,4 +115,4 @@ if username and password and action:
     else:
         print "ERROR: Bad username or password"
 else:
-    print "Username, password and action are required"
+    print "ERROR: action is required"
