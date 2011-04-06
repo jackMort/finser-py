@@ -172,7 +172,11 @@ if action:
             print " ------------------------------"
 
             prev_day = None
-            for item in finser.get( query ):
+            items = finser.get( query )
+            if len( items ) == 0:
+                print " Nothing to display"
+
+            for item in items:
                 date = item.getDateTime()
                 day = date.strftime( "%Y-%d-%m" )
                 time = date.strftime( "%H:%I:%S" )
