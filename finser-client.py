@@ -31,6 +31,8 @@ USAGE = """
  -a --accounts        display accounts info
  -r --remove          remove last operation
  -i --insert TEXT    insert given operation
+ -g --get QUERY    list last operations for
+                                given query
     --clear-cache    clear cached auth info
     --no-cache         dont store auth info
     --help                  print this help
@@ -42,7 +44,7 @@ def usage():
    print USAGE
 
 try:
-    options, remainder = getopt.getopt( sys.argv[1:], 'i:arl', [ 'accounts', 'insert=', 
+    options, remainder = getopt.getopt( sys.argv[1:], 'i:g:arl', [ 'accounts', 'insert=', 'get=', 
                                                                  'remove', 'last', 'no-cache', 'clear-cache', 'help' ])
 except getopt.GetoptError, e:
     usage()
@@ -71,6 +73,10 @@ for opt, arg in options:
 
     elif opt in ( '-l', '--last' ):
         action = 'last'
+
+    elif opt in ( '-g', '--get' ):
+        action = 'get'
+        params = { 'query': arg }
 
     elif opt in ( '--no-cache' ):
         noCache = True
@@ -155,13 +161,18 @@ if action:
             
             print " ------------------------------"
 
-        elif action == "last":
+        elif action in ( "last", "get" ):
+            if action == "get":
+                query = params['query']
+            else: 
+                query = "!last"
+
             print " ------------------------------"
-            print " \033[1mLast operations\033[0m"
+            print " \033[1mLast operations %s \033[0m" % query
             print " ------------------------------"
 
             prev_day = None
-            for item in finser.get():
+            for item in finser.get( query ):
                 date = item.getDateTime()
                 day = date.strftime( "%Y-%d-%m" )
                 time = date.strftime( "%H:%I:%S" )
