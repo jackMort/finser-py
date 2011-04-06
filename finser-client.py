@@ -23,8 +23,30 @@ import marshal
 
 from finser import Finser
 
-options, remainder = getopt.getopt( sys.argv[1:], 'i:arlnc', [ 'accounts', 'insert=', 
-                                                              'remove', 'last', 'no-cache', 'clear-cache' ])
+USAGE = """   
+ finser-client.py [OPTIONS] ...
+
+ -l --last          display last operations
+ -a --accounts        display accounts info
+ -r --remove          remove last operation
+ -i --insert TEXT    insert given operation
+    --clear-cache    clear cached auth info
+    --no-cache         dont store auth info
+    --help                  print this help
+
+  Reports bugs to:    lech.twarog@gmail.com
+"""
+
+def usage():
+   print USAGE
+
+try:
+    options, remainder = getopt.getopt( sys.argv[1:], 'i:arl', [ 'accounts', 'insert=', 
+                                                                 'remove', 'last', 'no-cache', 'clear-cache', 'help' ])
+except getopt.GetoptError, e:
+    usage()
+    sys.exit( 2 )
+
 action = ""
 params = {}
 noCache = False
@@ -32,7 +54,11 @@ clearCache = False
 
 for opt, arg in options:
     
-    if opt in ( '-a', '--accounts' ):
+    if opt in ( '-h', '--help' ):
+        usage()
+        sys.exit( 1 )
+
+    elif opt in ( '-a', '--accounts' ):
         action = 'accounts'
 
     elif opt in ( '-i', '--insert' ):
@@ -45,10 +71,10 @@ for opt, arg in options:
     elif opt in ( '-l', '--last' ):
         action = 'last'
 
-    elif opt in ( '-n', '--no-cache' ):
+    elif opt in ( '--no-cache' ):
         noCache = True
     
-    elif opt in ( '-c', '--clear-cache' ):
+    elif opt in ( '--clear-cache' ):
         clearCache = True
 
 def login():
@@ -115,4 +141,4 @@ if action:
     else:
         print "ERROR: Bad username or password"
 else:
-    print "ERROR: action is required"
+    usage()
