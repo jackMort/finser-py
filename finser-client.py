@@ -108,7 +108,7 @@ if action:
 
         elif action == "last":
             for item in finser.get():
-                print "%-50s %8s %s" % ( item.text, item.getValue(), item.getCurrency() )
+                print "%-50s %8s %s" % ( item.getDescription(), item.getValue(), item.getCurrency() )
 
         finser.logout()
 

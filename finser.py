@@ -48,6 +48,9 @@ class AbstractOperation( object ):
     def getCurrency( self ):
         pass
 
+    def getDescription( self ):
+        return self.text
+
 class AccountOperation( AbstractOperation ):
 
     def __init__( self, type, time, text, account ):
@@ -69,15 +72,25 @@ class AccountValueOperation( AccountOperation ):
     def getCurrency( self ):
         return self.__currency
 
-
 class MoveOperation( AbstractOperation ):
 
     def __init__( self, type, time, text, value, account_from, account_to  ):
         super( MoveOperation, self ).__init__( type, time, text )
         
         self.value = value
+        self.__value, self.__currency = value.split()
         self.account_from = account_from
         self.account_to = account_to
+
+    def getValue( self ):
+        return self.__value
+
+    def getCurrency( self ):
+        return self.__currency
+
+    def getDescription( self ):
+        description = super( MoveOperation, self ).getDescription()
+        return "%s > %s %s" % ( self.account_from, self.account_to, description )
 
 class TransferOperation( AccountOperation ):
 
