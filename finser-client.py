@@ -121,11 +121,11 @@ if action:
             print " \033[1mInserting new operation\033[0m"
             print " ------------------------------"
             
-            print " %s" % params['text']
+            print "\n %s\n" % params['text']
 
             if finser.insert( params['text'] ):
-                print " SUCCESFULLY !"
-            else: print " ERROR: cannot insert ..."
+                print " \033[1m\033[92mSUCCESFULLY ADDED!\033[0m"
+            else: print " \033[1m\033[92mFAILED TO ADD!\33[0m"
             
             print " ------------------------------"
 
@@ -138,14 +138,14 @@ if action:
             for account in finser.accounts():
                 val = []
                 for currency, summary in account.getCurrencySummary():
-                    val.append( "%8s %s" % ( summary, currency ) )
+                    val.append( "%s%10s %s\033[0m" % ( "\033[92m" if summary > 0 else "\033[91m", summary, currency ) )
                     if not ss.has_key( currency ):
                         ss[currency] = 0
                     ss[currency] += summary
-                print " %-50s \033[1m%s\033[0m" % ( account.name, ",".join( val ) )
+                print " \033[94m%-50s\033[0m %s" % ( account.name, ",".join( val ) )
             print " -----"
             for currency, summary in ss.items():
-               print " %-50s  \033[1m%s %s\033[0m" % ( "Summary", summary, currency )
+               print " \033[1m\033[94m%-50s\033[0m \033[1m%s%10s %s\033[0m" % ( "Summary", "\033[92m" if summary > 0 else "\033[91m", summary, currency )
             
             print " ------------------------------"
 
@@ -156,8 +156,8 @@ if action:
 
             before = finser.summary()
             if finser.remove():
-                print " SUCCESFULLY !"
-            else: print " ERROR: cannot remove ..."
+                print " \033[1m\033[92mSUCCESFULLY REMOVED!\033[0m"
+            else: print " \033[1m\033[92mFAILED TO REMOVE!\33[0m"
             
             print " ------------------------------"
 
@@ -176,6 +176,7 @@ if action:
             if len( items ) == 0:
                 print " Nothing to display"
 
+            ss = {}
             for item in items:
                 date = item.getDateTime()
                 day = date.strftime( "%Y-%d-%m" )
@@ -189,10 +190,19 @@ if action:
                 description = re.sub( r'\$(?P<account>\w+)', '\033[1m\033[96m#\g<account>\033[0m', description )
 
                 value = item.getValue()
+                currency = item.getCurrency()
+                if not ss.has_key( currency ):
+                    ss[currency] = 0
+                ss[currency] += value
                 
-                print "   \033[94m%s\033[0m \033[1m%s%10s %s\033[0m %s" % ( time, "\033[92m" if value > 0 else "\033[91m", value, item.getCurrency(), description  )
+                print "   \033[94m%s\033[0m %s%10s %s\033[0m %s" % ( time, "\033[92m" if value > 0 else "\033[91m", value, currency, description  )
                 prev_day = day
             
+            if len ( ss ):
+                print "\n -----"
+                for currency, summary in ss.items():
+                   print "     \033[1m\033[94m=\033[0m      \033[1m%s%10s %s\033[0m" % ( "\033[92m" if summary > 0 else "\033[91m", summary, currency )
+
             print " ------------------------------"
 
         finser.logout()

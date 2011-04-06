@@ -180,6 +180,9 @@ class Finser:
 
         if self.__isSuccess( code ):
             raw = json.loads( data )
+            if len( raw['operations'] ) == 0:
+                return {}
+
             result = []
             for id, dt in raw['operations'].items():
                 result.append( getOperationByType( dt['type'], **dt ) )

@@ -3,10 +3,38 @@ Biblioteka do obsługi api finsera [http://finser.pl]
 
 Instalacja:
 
-    python setup.py install
+  python setup.py install
 
 
 Użycie: 
 
-	Do pakietu dołączona jest prosta aplikacja konsolowa do obsługi finsera pod
-linkusem obrazuje ona możliwości api. 
+  Do pakietu dołączona jest prosta aplikacja konsolowa do obsługi finsera pod
+linkusem obrazuje ona możliwości api. Po zainstalowaniu jest ona gotowa do
+użycia. Aby odpalić aplikację wpisujemy w konsoli:
+
+  finser-client.py [OPCJE]
+
+  Dostępne opcje to:
+
+  -l, --last         lista ostatnich operacji 
+
+  -a, --accounts     lista stanów kont użytkownika
+
+  -r, --remove       usunięcie ostatniej operacji
+
+  -i, --insert TEXT  dodanie nowej operacji - należy pamiętać by 
+                     text wpisywać używając ciapek ['] znaki specjalne 
+                     nie są wtedy ineterpretowane.
+
+  -g, --get QUERY    lista operacji dla zadanego zapytania, zapytanie może 
+                     być tagiem np. '#wyplata', '#motor' lub kontem np. '$bank', '$portfel'
+
+
+  Dodatkowo można dodać następujące flagi:
+
+  --no-cache         jeżeli dodamy tą flagę aplikacja nie zapisze 
+                     naszych danych autoryzacyjnych
+
+  --clear-cache      usunie zapisane dane autoryzacyjne jeżeli 
+                     takowe istnieją
+
