@@ -183,12 +183,18 @@ class Finser:
             return {}
 
     def summary( self ):
-        data = self.accounts()
-        summary = 0
-        for k, v in data.items():
-            for t, s in v["summary"].items():
-                summary += float( s['plus'] ) - float( s['minus'] )
-        return summary
+        result = {}
+        for account in self.accounts():
+            for currency, summary in account.getCurrencySummary():
+                if not result.has_key( currency ):
+                    result[currency] = 0
+                result[currency] += summary
+        return result
+
+    def currencySummary( self, currency ):
+        summary = self.summary()
+        if summary.has_key( currency ):
+            return summary[currency]
 
     def __openUrl( self, url, params=None ):
         data = urllib.urlencode( params ) if params else None
