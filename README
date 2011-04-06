@@ -2,10 +2,11 @@ Biblioteka do obsługi api finsera [http://finser.pl]
 ======================================================
 
 Instalacja:
+
     python setup.py install
 
 
 Użycie: 
 
-    Do pakietu dołączona jest prosta aplikacja konsolowa do obsługi finsera
-z konsoli pod linuksem. 
+	Do pakietu dołączona jest prosta aplikacja konsolowa do obsługi finsera pod
+linkusem obrazuje ona możliwości api. 
