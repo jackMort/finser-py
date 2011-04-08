@@ -51,7 +51,8 @@ class FileLoader( object ):
         
         except NotLoggedException:
             print "disconnected, login again ..."
-            if not self.finser.loginAgain()
+            time.sleep( 2 )
+            if not self.finser.login()
                 raise FinserException( "Cannot login again" )
         
         except OperationLimitException:
