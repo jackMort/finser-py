@@ -118,6 +118,15 @@ def getOperationByType( id, **kwargs ):
     return operationDict[id]( **kwargs )
 
 
+class FinserException( Exception ):
+    pass
+
+class NotLoggedException( FinserException ):
+    pass
+
+class OperationLimitException( FinserException ):
+    pass
+
 class Finser:
 
     SUCCESS_CODE = 200
@@ -154,7 +163,7 @@ class Finser:
     def insert( self, text, time=None ):
         params = { 'text': text }
         if time is not None:
-            time = time
+            params['time'] = time
 
         data, code = self.__openUrl( self.URL_PATTERN % "insert", params )
         
@@ -190,6 +199,11 @@ class Finser:
             return sorted( result, key=lambda item: item.time, reverse=True )
         else:
             return {}
+    
+    def clear( self ):
+        notSuccess=True
+        while notSuccess:
+            notSuccess = self.remove()
 
     def summary( self ):
         result = {}
@@ -216,8 +230,26 @@ class Finser:
         try:
             response = self.opener.open( url, data )
             return ( response.read(), response.code )
+
         except urllib2.URLError, e:
-            return ( e.read(), e.code )
+            content = e.read()
+            print "ERROR: %s" % e.read()
+    
+            try:
+                raw = json.loads( content )
+
+            except Exception, ex:
+                raise FinserException( "Unknown error" )
+
+            error = int( raw['error'] )
+            message = raw['message']
+
+            if error == 401:
+                raise NotLoggedException()
+
+            elif error == 403:
+                raise OperationLimitException()
+
 
     def __isSuccess( self, code ):
         return code == self.SUCCESS_CODE
