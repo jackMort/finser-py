@@ -47,12 +47,12 @@ class FileLoader( object ):
 
     def addOperation( self, description, date ):
         try: 
-            self.finser.insert( description, date ):
+            self.finser.insert( description, date )
         
         except NotLoggedException:
             print "disconnected, login again ..."
             time.sleep( 2 )
-            if not self.finser.login()
+            if not self.finser.login():
                 raise FinserException( "Cannot login again" )
         
         except OperationLimitException:

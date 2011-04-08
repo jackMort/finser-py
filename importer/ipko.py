@@ -78,5 +78,5 @@ class IPKOLoader( FileLoader ):
             description = ' '.join( desc_tmp )
             print description
 
-            self.addOperation( description, date ):
+            self.addOperation( description, date )
             time.sleep( self.INSERT_SLEEP )

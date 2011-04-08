@@ -176,6 +176,10 @@ class Finser:
             raw = json.loads( data )
             result = []
             for id, dt in raw.items():
+
+                if not len( dt['summary'] ):
+                    continue
+
                 account = Account( dt['name'] )
                 for c, s in dt['summary'].items():
                     account.addCurrencySummary( c, float( s['plus'] ), float( s['minus'] ) )
