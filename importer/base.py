@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+
+# Copyright (C) 2011  lech.twarog@gmail.com
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import time
+from finser import FinserException, NotLoggedException, OperationLimitException
+
 class LoaderRegistry( object ):
 
     def __init__( self ):
@@ -17,8 +37,24 @@ class LoaderRegistry( object ):
 
 class FileLoader( object ):
 
+    INSERT_SLEEP = 7
+
     def __init__( self, finser ):
         self.finser = finser
 
     def load( filename ):
         raise NotImplemented
+
+    def addOperation( self, description, date ):
+        try: 
+            self.finser.insert( description, date ):
+        
+        except NotLoggedException:
+            print "disconnected, login again ..."
+            if not self.finser.loginAgain()
+                raise FinserException( "Cannot login again" )
+        
+        except OperationLimitException:
+            print "Ups, operation limit trying again ..."
+            time.sleep( 10 )
+            self.addOperation( description, date )
