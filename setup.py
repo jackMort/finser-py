@@ -25,5 +25,6 @@ setup( name='finser-py',
        author_email='lech.twarog@gmail.com',
        url='http://github.com/jackMort/finser-py',
        py_modules=[ 'finser', ],
+       packages=[ 'importer', ],
        data_files=[ ( '/usr/bin', [ 'finser-client.py' ] ) ]
      )
