@@ -53,9 +53,6 @@ group.add_option( "--import", dest="load", nargs=2, help="import file with speci
 
 parser.add_option_group( group )
 
-def usage():
-   parser.print_help()
-
 ( options, args ) = parser.parse_args()
 
 path = os.path.join( os.path.expanduser( "~" ), ".finser-py.cache" )
